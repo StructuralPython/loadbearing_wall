@@ -149,13 +149,13 @@ class LinearReactionString:
         flattened_reaction_components = []
         for load_dir, dir_loads in self.linear_reactions.items():
             reaction_components.setdefault(load_dir, {})
-            for load_case, distributed_loads in dir_loads.items():
+            for load_case, linear_reactions in dir_loads.items():
                 reaction_components[load_dir].setdefault(load_case, [])
                 singularity_functions = []
-                for dist_load in distributed_loads:
-                    m = (dist_load[w1] - dist_load[w0]) / (dist_load[x1] - dist_load[x0])
-                    y0 = dist_load[w0]
-                    singularity_function = Singularity(x0=dist_load[x0], y0=y0, x1=dist_load[x1], m=m, precision=3)
+                for lr in linear_reactions:
+                    m = (lr.w1 - lr.w0) / (lr.x1 - lr.x0)
+                    y0 = lr.w0
+                    singularity_function = Singularity(x0=lr.x0, y0=y0, x1=lr.x1, m=m, precision=3)
                     singularity_functions.append(singularity_function)
                 linear_reactions = singularity_xy_to_distributed_loads(
                     singularities_to_polygon(
@@ -173,8 +173,6 @@ class LinearReactionString:
                 flattened_reaction_components.append(linear_reactions)
 
                 # Get ride of the extrandious dir and case keys for unflattened results
-                linear_reactions.pop(dir_key)
-                linear_reactions.pop(case_key)
                 reaction_components[load_dir][load_case] = linear_reactions
         if flatten:
             return flattened_reaction_components

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, Any, Union
 
 from . import linear_reactions as lr
@@ -11,13 +11,13 @@ class LinearWallModel:
     height: float
     length: float
     vertical_spread_angle: float = 0.0
-    distributed_loads: dict = dict() # Check no side-effects for multiple instances
-    point_loads: dict = dict() # Check no side-effects for multiple instances
+    distributed_loads: dict = field(default_factory=dict) # Check no side-effects for multiple instances
+    point_loads: dict = field(default_factory=dict) # Check no side-effects for multiple instances
     gravity_dir: str = "z"
     inplane_dir: str = "x"
     out_of_plane_dir: str = "y"
-    apply_spread_angle_gravity: True
-    apply_spread_angle_inplane: True
+    apply_spread_angle_gravity: bool = True
+    apply_spread_angle_inplane: bool = True
     magnitude_start_key: str = "w0"
     magnitude_end_key: str = "w1"
     location_start_key: str = "x0"
@@ -148,7 +148,12 @@ class LinearWallModel:
                             dist_load[x0],
                             dist_load.get(x1),
                         )
-                        proj[load_dir][load_case].append(projected_load)
+                        proj[load_dir][load_case].append({
+                            w0: projected_load[0],
+                            w1: projected_load[1],
+                            x0: projected_load[2],
+                            x1: projected_load[3]
+                        })
                     else:
                         proj[load_dir][load_case].append(dist_load)
         self._projected_loads = proj
@@ -156,7 +161,7 @@ class LinearWallModel:
 
     def get_reactions(self, flattened: bool = False, direction_key: str = "dir", case_key: str = "case"):
         self.spread_loads()
-        lrs = lr.LinearReactionString(
+        lrs = lr.LinearReactionString.from_projected_loads(
             self._projected_loads,
             self.magnitude_start_key,
             self.magnitude_end_key,
