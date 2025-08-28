@@ -4,15 +4,19 @@ from typing import Optional, Any, Union
 from . import linear_reactions as lr
 from . import point_reactions as pr
 from . import geom_ops as geom
-    
+
 
 @dataclass
 class LinearWallModel:
     height: float
     length: float
     vertical_spread_angle: float = 0.0
-    distributed_loads: dict = field(default_factory=dict) # Check no side-effects for multiple instances
-    point_loads: dict = field(default_factory=dict) # Check no side-effects for multiple instances
+    distributed_loads: dict = field(
+        default_factory=dict
+    )  # Check no side-effects for multiple instances
+    point_loads: dict = field(
+        default_factory=dict
+    )  # Check no side-effects for multiple instances
     gravity_dir: str = "z"
     inplane_dir: str = "x"
     out_of_plane_dir: str = "y"
@@ -52,15 +56,16 @@ class LinearWallModel:
     'location_end_key': The key that will be used internally and in reaction results for the
         end location
     """
+
     def add_dist_load(
-            self, 
-            magnitude_start: float, 
-            magnitude_end: float, 
-            location_start: float, 
-            location_end: float,
-            case: str, 
-            dir: str
-        ) -> None:
+        self,
+        magnitude_start: float,
+        magnitude_end: float,
+        location_start: float,
+        location_end: float,
+        case: str,
+        dir: str,
+    ) -> None:
         """
         Adds a distributed load to the model
 
@@ -76,20 +81,18 @@ class LinearWallModel:
 
         self.distributed_loads.setdefault(dir, {})
         self.distributed_loads[dir].setdefault(case, [])
-        self.distributed_loads[dir][case].append({
-            self.magnitude_start_key: magnitude_start,
-            self.magnitude_end_key: magnitude_end,
-            self.location_start_key: location_start,
-            self.location_end_key: location_end,
-        })
+        self.distributed_loads[dir][case].append(
+            {
+                self.magnitude_start_key: magnitude_start,
+                self.magnitude_end_key: magnitude_end,
+                self.location_start_key: location_start,
+                self.location_end_key: location_end,
+            }
+        )
 
     def add_point_load(
-            self, 
-            magnitude: float, 
-            location: float, 
-            case: str, 
-            dir: str
-        ) -> None:
+        self, magnitude: float, location: float, case: str, dir: str
+    ) -> None:
         """
         Adds a point load to the model
 
@@ -102,11 +105,13 @@ class LinearWallModel:
 
         self.distributed_loads.setdefault(dir, {})
         self.distributed_loads[dir].setdefault(case, [])
-        self.distributed_loads[dir][case].append({
-            self.magnitude_start_key: magnitude,
-            self.location_start_key: location,
-        })
-    
+        self.distributed_loads[dir][case].append(
+            {
+                self.magnitude_start_key: magnitude,
+                self.location_start_key: location,
+            }
+        )
+
     def spread_loads(self) -> None:
         """
         Populates self._projected_loads with the loads projected from the distributed
@@ -123,81 +128,81 @@ class LinearWallModel:
         for load_dir, load_cases in self.distributed_loads.items():
             proj.setdefault(load_dir, {})
             should_apply_spread_angle = (
-                (
-                    load_dir == self.gravity_dir
-                    and self.apply_spread_angle_gravity
-                    and self.vertical_spread_angle != 0.0
-                )
-                or 
-                (
-                    load_dir == self.inplane_dir
-                    and self.apply_spread_angle_inplane
-                    and self.vertical_spread_angle != 0.0
-                )
+                load_dir == self.gravity_dir
+                and self.apply_spread_angle_gravity
+                and self.vertical_spread_angle != 0.0
+            ) or (
+                load_dir == self.inplane_dir
+                and self.apply_spread_angle_inplane
+                and self.vertical_spread_angle != 0.0
             )
             for load_case, dist_loads in load_cases.items():
                 proj[load_dir].setdefault(load_case, [])
                 for dist_load in dist_loads:
                     if should_apply_spread_angle:
                         projected_load = geom.apply_spread_angle(
-                            self.height, 
-                            self.length, 
+                            self.height,
+                            self.length,
                             self.vertical_spread_angle,
                             dist_load[w0],
                             dist_load[x0],
                             dist_load.get(w1),
                             dist_load.get(x1),
                         )
-                        proj[load_dir][load_case].append({
-                            w0: projected_load[0],
-                            w1: projected_load[1],
-                            x0: projected_load[2],
-                            x1: projected_load[3]
-                        })
+                        proj[load_dir][load_case].append(
+                            {
+                                w0: projected_load[0],
+                                w1: projected_load[1],
+                                x0: projected_load[2],
+                                x1: projected_load[3],
+                            }
+                        )
                     else:
                         proj[load_dir][load_case].append(dist_load)
 
         for load_dir, load_cases in self.point_loads.items():
             proj.setdefault(load_dir, {})
             should_apply_spread_angle = (
-                (
-                    load_dir == self.gravity_dir
-                    and self.apply_spread_angle_gravity
-                    and self.vertical_spread_angle != 0.0
-                )
-                or 
-                (
-                    load_dir == self.inplane_dir
-                    and self.apply_spread_angle_inplane
-                    and self.vertical_spread_angle != 0.0
-                )
+                load_dir == self.gravity_dir
+                and self.apply_spread_angle_gravity
+                and self.vertical_spread_angle != 0.0
+            ) or (
+                load_dir == self.inplane_dir
+                and self.apply_spread_angle_inplane
+                and self.vertical_spread_angle != 0.0
             )
             for load_case, point_loads in load_cases.items():
                 proj[load_dir].setdefault(load_case, [])
                 for point_load in point_loads:
                     if should_apply_spread_angle:
                         projected_load = geom.apply_spread_angle(
-                            self.height, 
-                            self.length, 
+                            self.height,
+                            self.length,
                             self.vertical_spread_angle,
                             point_load[w0],
                             point_load[x0],
                             point_load.get(w1),
                             point_load.get(x1),
                         )
-                        proj[load_dir][load_case].append({
-                            w0: projected_load[0],
-                            w1: projected_load[1],
-                            x0: projected_load[2],
-                            x1: projected_load[3]
-                        })
+                        proj[load_dir][load_case].append(
+                            {
+                                w0: projected_load[0],
+                                w1: projected_load[1],
+                                x0: projected_load[2],
+                                x1: projected_load[3],
+                            }
+                        )
                     else:
                         proj[load_dir][load_case].append(point_load)
-                        
+
         self._projected_loads = proj
 
-
-    def get_reactions(self, flattened: bool = False, direction_key: str = "dir", case_key: str = "case"):
+    def get_reactions(
+        self,
+        flattened: bool = False,
+        direction_key: str = "dir",
+        case_key: str = "case",
+    ):
         self.spread_loads()
         lrs = lr.LinearReactionString.from_projected_loads(
             self._projected_loads,
@@ -206,7 +211,6 @@ class LinearWallModel:
             self.location_start_key,
             self.location_end_key,
         )
-        return lrs.consolidate_reactions(flatten=flattened, dir_key=direction_key, case_key=case_key)
-
-    
-
+        return lrs.consolidate_reactions(
+            flatten=flattened, dir_key=direction_key, case_key=case_key
+        )

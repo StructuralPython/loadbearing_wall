@@ -1,6 +1,7 @@
 import math
 from typing import Optional
 
+
 def apply_spread_angle(
     wall_height: float,
     wall_length: float,
@@ -12,7 +13,7 @@ def apply_spread_angle(
 ) -> dict:
     """
     Returns a dictionary representing the load described by
-    w0, w1, x0, x1. If only w0 and x0 are provided, the 
+    w0, w1, x0, x1. If only w0 and x0 are provided, the
     load is assumed to be a point load.
 
     The total spread cannot be longer than the wall length.
@@ -37,10 +38,15 @@ def apply_spread_angle(
         projected_w1 = w1 * ratio
     else:
         projected_w1 = w0 * ratio
-    return (round_to_close_integer(projected_w0), round_to_close_integer(projected_w1), round_to_close_integer(projected_x0), round_to_close_integer(projected_x1))
+    return (
+        round_to_close_integer(projected_w0),
+        round_to_close_integer(projected_w1),
+        round_to_close_integer(projected_x0),
+        round_to_close_integer(projected_x1),
+    )
 
 
-def round_to_close_integer(x: float, eps = 1e-7) -> float | int:
+def round_to_close_integer(x: float, eps=1e-7) -> float | int:
     """
     Rounds to the nearest int if it is REALLY close
     """
