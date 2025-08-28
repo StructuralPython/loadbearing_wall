@@ -1,5 +1,5 @@
 """
-A package that models a generic load-bearing wall for the purpose of determining 
+A package that models a generic load-bearing wall for the purpose of determining
 reactions and load-transfer.
 
 The wall model is parameterizable and can represent any material
