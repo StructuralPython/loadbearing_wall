@@ -7,4 +7,5 @@ The wall model is parameterizable and can represent any material
 
 __version__ = "0.1.0"
 
+from loadbearing_wall.wall_model import LinearWallModel
 from loadbearing_wall import *

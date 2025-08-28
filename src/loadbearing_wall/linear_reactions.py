@@ -157,7 +157,6 @@ class LinearReactionString:
                 for lr in linear_reactions:
                     if lr.w1 is None and lr.x1 is None:
                         point_load =  {w0: lr.w0, x0: lr.x0, dir_key: load_dir, case_key: load_case}
-                        print(f"{point_load=}")
                         flattened_reaction_components.append(
                             point_load
                         )
@@ -168,7 +167,6 @@ class LinearReactionString:
                         m = (lr.w1 - lr.w0) / (lr.x1 - lr.x0)
                         y0 = lr.w0
                         singularity_function = Singularity(x0=lr.x0, y0=y0, x1=lr.x1, m=m, precision=6)
-                        print(singularity_function)
                         singularity_functions.append(singularity_function)
                 if not singularity_functions: continue
                 linear_reactions = singularity_xy_to_distributed_loads(
@@ -236,7 +234,6 @@ def singularity_xy_to_distributed_loads(
     dist_loads = []
     prev_x = None
     for idx, (x, y) in enumerate(zip(*xy_vals)):
-        print(f"{(x, y)=}")
         if idx == 0: continue
         if prev_x is None:
             prev_x = x
