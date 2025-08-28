@@ -6,9 +6,9 @@ readme = "README.md"
 authors = [
     { name = "Connor Ferster", email = "connorferster@gmail.com" }
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
-    "load-distribution>=0.1.0",
+    "load-distribution==0.1.4",
 ]
 
 [project.scripts]

@@ -27,10 +27,24 @@ def apply_spread_angle(
     else:
         projected_x1 = min(wall_length, x1 + spread_amount)
     projected_length = projected_x1 - projected_x0
-    assert projected_length <= wall_length
-    original_length = x1 - x0
+    if x1 is not None:
+        original_length = x1 - x0
+    else:
+        original_length = 1
     ratio = original_length / projected_length
     projected_w0 = w0 * ratio
-    projected_w1 = w1 * ratio
-    assert (projected_w0 + projected_w1) / 2 * projected_length == (w0 + w1) / 2 * original_length
-    return (projected_w0, projected_w1, projected_x0, projected_x1)
+    if w1 is not None:
+        projected_w1 = w1 * ratio
+    else:
+        projected_w1 = w0 * ratio
+    return (round_to_close_integer(projected_w0), round_to_close_integer(projected_w1), round_to_close_integer(projected_x0), round_to_close_integer(projected_x1))
+
+
+def round_to_close_integer(x: float, eps = 1e-7) -> float | int:
+    """
+    Rounds to the nearest int if it is REALLY close
+    """
+    if abs(abs(round(x)) - abs(x)) < eps:
+        return round(x)
+    else:
+        return x

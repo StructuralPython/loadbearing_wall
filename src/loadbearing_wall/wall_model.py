@@ -144,8 +144,8 @@ class LinearWallModel:
                             self.length, 
                             self.vertical_spread_angle,
                             dist_load[w0],
-                            dist_load.get(w1),
                             dist_load[x0],
+                            dist_load.get(w1),
                             dist_load.get(x1),
                         )
                         proj[load_dir][load_case].append({
@@ -156,6 +156,44 @@ class LinearWallModel:
                         })
                     else:
                         proj[load_dir][load_case].append(dist_load)
+
+        for load_dir, load_cases in self.point_loads.items():
+            proj.setdefault(load_dir, {})
+            should_apply_spread_angle = (
+                (
+                    load_dir == self.gravity_dir
+                    and self.apply_spread_angle_gravity
+                    and self.vertical_spread_angle != 0.0
+                )
+                or 
+                (
+                    load_dir == self.inplane_dir
+                    and self.apply_spread_angle_inplane
+                    and self.vertical_spread_angle != 0.0
+                )
+            )
+            for load_case, point_loads in load_cases.items():
+                proj[load_dir].setdefault(load_case, [])
+                for point_load in point_loads:
+                    if should_apply_spread_angle:
+                        projected_load = geom.apply_spread_angle(
+                            self.height, 
+                            self.length, 
+                            self.vertical_spread_angle,
+                            point_load[w0],
+                            point_load[x0],
+                            point_load.get(w1),
+                            point_load.get(x1),
+                        )
+                        proj[load_dir][load_case].append({
+                            w0: projected_load[0],
+                            w1: projected_load[1],
+                            x0: projected_load[2],
+                            x1: projected_load[3]
+                        })
+                    else:
+                        proj[load_dir][load_case].append(point_load)
+                        
         self._projected_loads = proj
 
 

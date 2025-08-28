@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 from load_distribution import Singularity, singularities_to_polygon
+from .geom_ops import round_to_close_integer as rtci
 
 @dataclass
 class LinearReaction:
@@ -45,7 +46,7 @@ class LinearReaction:
             xj = xb
             yj = y0 + (xj - self.x0) * m
 
-        return LinearReaction(yi, yj, xi, xj)
+        return LinearReaction(rtci(yi), rtci(yj), rtci(xi), rtci(xj))
 
 
 @dataclass
@@ -73,18 +74,19 @@ class LinearReactionString:
         x0 = location_start_key
         x1 = location_end_key
         linear_reaction_components = {}
-        for load_dir, dir_loads in projected_loads.items():
+        for load_dir, load_cases in projected_loads.items():
             linear_reaction_components.setdefault(load_dir, {})
-            for load_case, distributed_loads in dir_loads.items():
+            for load_case, applied_loads in load_cases.items():
                 linear_reaction_components[load_dir].setdefault(load_case, [])
-                for distributed_load in distributed_loads:
+                for applied_load in applied_loads:
                     linear_reaction = LinearReaction(
-                        distributed_load[w0],
-                        distributed_load[w1],
-                        distributed_load[x0],
-                        distributed_load[x1],
+                        applied_load[w0],
+                        applied_load.get(w1),
+                        applied_load[x0],
+                        applied_load.get(x1),
                     )
-                linear_reaction_components[load_dir][load_case].append(linear_reaction)
+
+                    linear_reaction_components[load_dir][load_case].append(linear_reaction)
         return cls(linear_reaction_components, w0, w1, x0, x1)
 
 
@@ -147,16 +149,28 @@ class LinearReactionString:
         x1 = self.location_end_key
         reaction_components = {}
         flattened_reaction_components = []
-        for load_dir, dir_loads in self.linear_reactions.items():
+        for load_dir, load_cases in self.linear_reactions.items():
             reaction_components.setdefault(load_dir, {})
-            for load_case, linear_reactions in dir_loads.items():
+            for load_case, linear_reactions in load_cases.items():
                 reaction_components[load_dir].setdefault(load_case, [])
                 singularity_functions = []
                 for lr in linear_reactions:
-                    m = (lr.w1 - lr.w0) / (lr.x1 - lr.x0)
-                    y0 = lr.w0
-                    singularity_function = Singularity(x0=lr.x0, y0=y0, x1=lr.x1, m=m, precision=3)
-                    singularity_functions.append(singularity_function)
+                    if lr.w1 is None and lr.x1 is None:
+                        point_load =  {w0: lr.w0, x0: lr.x0, dir_key: load_dir, case_key: load_case}
+                        print(f"{point_load=}")
+                        flattened_reaction_components.append(
+                            point_load
+                        )
+                        reaction_components[load_dir][load_case].append(
+                            point_load
+                        )
+                    else:
+                        m = (lr.w1 - lr.w0) / (lr.x1 - lr.x0)
+                        y0 = lr.w0
+                        singularity_function = Singularity(x0=lr.x0, y0=y0, x1=lr.x1, m=m, precision=6)
+                        print(singularity_function)
+                        singularity_functions.append(singularity_function)
+                if not singularity_functions: continue
                 linear_reactions = singularity_xy_to_distributed_loads(
                     singularities_to_polygon(
                         singularity_functions, xy=True
@@ -173,7 +187,7 @@ class LinearReactionString:
                 flattened_reaction_components.append(linear_reactions)
 
                 # Get ride of the extrandious dir and case keys for unflattened results
-                reaction_components[load_dir][load_case] = linear_reactions
+                reaction_components[load_dir][load_case] += linear_reactions
         if flatten:
             return flattened_reaction_components
         return reaction_components
@@ -219,16 +233,16 @@ def singularity_xy_to_distributed_loads(
     w1 = magnitude_end_key
     x0 = location_start_key
     x1 = location_end_key
-    filtered = filter_repeated_y_values(xy_vals)
     dist_loads = []
     prev_x = None
-    for idx, (x, y) in enumerate(filtered):
+    for idx, (x, y) in enumerate(zip(*xy_vals)):
+        print(f"{(x, y)=}")
         if idx == 0: continue
         if prev_x is None:
             prev_x = x
             prev_y = y
         elif x - prev_x > 1e-3:
-            dist_load = {w0: prev_y, w1: y, x0: prev_x,  x1: x, case_key: case, dir_key: dir}
+            dist_load = {w0: float(rtci(prev_y)), w1: float(rtci(y)), x0: float(rtci(prev_x)),  x1: float(rtci(x)), case_key: case, dir_key: dir}
             dist_loads.append(dist_load)
             prev_x = x
             prev_y = y
