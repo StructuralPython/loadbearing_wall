@@ -1,22 +1,20 @@
 [project]
 name = "loadbearing-wall"
-version = "0.1.0"
-description = "Add your description here"
+dynamic = ['version', 'description']
 readme = "README.md"
 authors = [
-    { name = "Connor Ferster", email = "connorferster@gmail.com" }
+    { name = "Connor Ferster", email = "connor@structuralpython.com" }
 ]
 requires-python = ">=3.11"
 dependencies = [
     "load-distribution==0.1.4",
+    "pydantic>=2.0.0",
+    "safer>=5.1.0",
 ]
 
-[project.scripts]
-loadbearing-wall = "loadbearing_wall:main"
-
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
 
 [dependency-groups]
 dev = [

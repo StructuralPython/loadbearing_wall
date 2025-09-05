@@ -1,22 +1,20 @@
-from dataclasses import dataclass, field
+from pydantic import BaseModel, Field
+import pathlib
 from typing import Optional, Any, Union
+import safer
 
 from . import linear_reactions as lr
 from . import point_reactions as pr
 from . import geom_ops as geom
 
 
-@dataclass
-class LinearWallModel:
+
+class LinearWallModel(BaseModel):
     height: float
     length: float
     vertical_spread_angle: float = 0.0
-    distributed_loads: dict = field(
-        default_factory=dict
-    )  # Check no side-effects for multiple instances
-    point_loads: dict = field(
-        default_factory=dict
-    )  # Check no side-effects for multiple instances
+    distributed_loads: dict = Field(default={})
+    point_loads: dict = Field(default={})
     gravity_dir: str = "z"
     inplane_dir: str = "x"
     out_of_plane_dir: str = "y"
@@ -56,6 +54,26 @@ class LinearWallModel:
     'location_end_key': The key that will be used internally and in reaction results for the
         end location
     """
+    
+    @classmethod
+    def from_json(self, filepath: str | pathlib.Path):
+        with safer.open(filepath) as file:
+            json_data = file.read()
+        return self.model_validate_json(json_data)
+
+    def to_json(self, filepath: str | pathlib.Path, indent=2):
+        json_data = self.model_dump_json(indent=indent)
+        with safer.open(filepath, 'w') as file:
+            file.write(json_data)
+
+    @classmethod
+    def from_dict(self, data: dict):
+        return self.model_validate(data)
+    
+
+    def dump_dict(self):
+        return self.model_dump(mode='json')
+
 
     def add_dist_load(
         self,
@@ -203,7 +221,7 @@ class LinearWallModel:
         direction_key: str = "dir",
         case_key: str = "case",
     ):
-        self.spread_loads()
+        self.spread_loads() # Populates self._projected_loads
         lrs = lr.LinearReactionString.from_projected_loads(
             self._projected_loads,
             self.magnitude_start_key,
