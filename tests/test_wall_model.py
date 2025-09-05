@@ -96,3 +96,16 @@ def test_45_spread(WM1):
             "x2": 4.0,
         },
     ]
+
+
+def test_serialization(WM0):
+    serialized_dict = WM0.dump_dict()
+    reconstituted = LinearWallModel.from_dict(serialized_dict)
+    assert reconstituted == WM0
+
+    import pathlib
+
+    tempfile = pathlib.Path("tempfile.json")
+    WM0.to_json(tempfile)
+    recon2 = LinearWallModel.from_json(tempfile)
+    assert WM0 == recon2
