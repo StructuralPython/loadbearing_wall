@@ -40,7 +40,6 @@ def WM1(WM0):
     return WM0
 
 
-
 def test_wall_model_runs(WM0, WM1):
     assert WM0.get_reactions()
     assert WM1.get_reactions()
@@ -105,6 +104,7 @@ def test_serialization(WM0):
     assert reconstituted == WM0
 
     import pathlib
+
     tempfile = pathlib.Path("tempfile.json")
     WM0.to_json(tempfile)
     recon2 = LinearWallModel.from_json(tempfile)

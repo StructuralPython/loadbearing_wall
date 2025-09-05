@@ -8,7 +8,6 @@ from . import point_reactions as pr
 from . import geom_ops as geom
 
 
-
 class LinearWallModel(BaseModel):
     height: float
     length: float
@@ -54,7 +53,7 @@ class LinearWallModel(BaseModel):
     'location_end_key': The key that will be used internally and in reaction results for the
         end location
     """
-    
+
     @classmethod
     def from_json(self, filepath: str | pathlib.Path):
         with safer.open(filepath) as file:
@@ -63,17 +62,15 @@ class LinearWallModel(BaseModel):
 
     def to_json(self, filepath: str | pathlib.Path, indent=2):
         json_data = self.model_dump_json(indent=indent)
-        with safer.open(filepath, 'w') as file:
+        with safer.open(filepath, "w") as file:
             file.write(json_data)
 
     @classmethod
     def from_dict(self, data: dict):
         return self.model_validate(data)
-    
 
     def dump_dict(self):
-        return self.model_dump(mode='json')
-
+        return self.model_dump(mode="json")
 
     def add_dist_load(
         self,
@@ -221,7 +218,7 @@ class LinearWallModel(BaseModel):
         direction_key: str = "dir",
         case_key: str = "case",
     ):
-        self.spread_loads() # Populates self._projected_loads
+        self.spread_loads()  # Populates self._projected_loads
         lrs = lr.LinearReactionString.from_projected_loads(
             self._projected_loads,
             self.magnitude_start_key,
