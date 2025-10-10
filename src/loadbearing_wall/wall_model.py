@@ -118,9 +118,9 @@ class LinearWallModel(BaseModel):
         """
         assert 0.0 <= location <= self.length
 
-        self.distributed_loads.setdefault(dir, {})
-        self.distributed_loads[dir].setdefault(case, [])
-        self.distributed_loads[dir][case].append(
+        self.point_loads.setdefault(dir, {})
+        self.point_loads[dir].setdefault(case, [])
+        self.point_loads[dir][case].append(
             {
                 self.magnitude_start_key: magnitude,
                 self.location_start_key: location,
