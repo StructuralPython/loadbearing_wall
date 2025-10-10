@@ -7,7 +7,7 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "load-distribution==0.1.4",
+    "load-distribution>=0.1.6",
     "pydantic>=2.0.0",
     "safer>=5.1.0",
 ]
