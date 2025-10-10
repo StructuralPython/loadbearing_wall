@@ -281,20 +281,20 @@ wheels = [
 
 [[package]]
 name = "load-distribution"
-version = "0.1.4"
+version = "0.1.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
     { name = "shapely" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2e/64/c404bc5a2512e46b43e3c012ba3758f9b50f47517c1ad57be66ce9d56825/load_distribution-0.1.4.tar.gz", hash = "sha256:3fd9e4f0f3e05d13cf177f1b0c3205f4794cbfd49887801ee1d2f1e5feaec143", size = 15835 }
+sdist = { url = "https://files.pythonhosted.org/packages/00/02/d05f4e0783a460abf46240c2f87ce55b3a0337d7d1fbbcf4c25440c02df8/load_distribution-0.1.6.tar.gz", hash = "sha256:07bc896e6fce9b50e3148117db4ecae6487a12730cfb249cdb2362706f93e9fe", size = 15908 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/72/53de6becc8acb47b3a8edcb66928dd7e184f86a420c88eac87a2ef05904e/load_distribution-0.1.4-py3-none-any.whl", hash = "sha256:283fdc1fb6cddbfd71d459f406e3735ec5a016e553228f38a98e5f7cffd2760f", size = 17207 },
+    { url = "https://files.pythonhosted.org/packages/89/c3/b67e372dad34e78ce22787fcb9d67ab4bac6f56f840a88e059702f9af7b0/load_distribution-0.1.6-py3-none-any.whl", hash = "sha256:922ba394d544c93d7f57ea0d3a20ab0d76058b34552e89c80770f3971b4e262e", size = 17275 },
 ]
 
 [[package]]
 name = "loadbearing-wall"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "load-distribution" },
@@ -311,7 +311,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "load-distribution", specifier = "==0.1.4" },
+    { name = "load-distribution", specifier = ">=0.1.6" },
     { name = "pydantic", specifier = ">=2.0.0" },
     { name = "safer", specifier = ">=5.1.0" },
 ]
