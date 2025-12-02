@@ -95,9 +95,7 @@ class LinearReactionString:
                     )
         return cls(linear_reaction_components, w0, w1, x0, x1)
 
-    def extract_reaction_string(
-        self, xa: float, xb: float, case: str, dir: str
-    ):
+    def extract_reaction_string(self, xa: float, xb: float, case: str, dir: str):
         """
         Returns a LinearReactionString representing the linear reactions that
         exist between 'xa' and 'xb' extracted from self.

@@ -11,7 +11,7 @@ def apply_spread_angle(
     w1: Optional[float] = None,
     x1: Optional[float] = None,
     p: Optional[float] = None,
-    x: Optional[float] = None
+    x: Optional[float] = None,
 ) -> tuple[float, float, float, float]:
     """
     Returns a dictionary representing the load described by
@@ -64,16 +64,16 @@ def apply_minimum_width(
     """
     Returns a dictionary representing a distributed load
     representing the point load converted to a distributed
-    load over the 'spread_width' in such a way that the 
+    load over the 'spread_width' in such a way that the
     point load will be distributed an equal amount over
     half of the spread_width on each side of point load.
 
     If the point load location is 0 or wall_length, then
     the point load will be a distributed load over half
     of the spread_width (since there is not room for the
-    other half). 
+    other half).
 
-    Load locations between zero/wall_length and half of the 
+    Load locations between zero/wall_length and half of the
     spread_width will be linearly interpolated.
     """
     assert spread_width <= wall_length
