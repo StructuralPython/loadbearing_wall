@@ -73,7 +73,8 @@ def apply_minimum_width(
     Load locations between zero/wall_length and half of the
     spread_width will be linearly interpolated.
     """
-    assert spread_width <= wall_length
+    if spread_width > wall_length:
+        spread_width = wall_length
     if location <= spread_width / 2:
         projected_x0 = 0
         projected_x1 = location + spread_width / 2
