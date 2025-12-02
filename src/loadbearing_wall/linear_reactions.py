@@ -73,7 +73,7 @@ class LinearReactionString:
         magnitude_end_key: str,
         location_start_key: str,
         location_end_key: str,
-        reverse_reaction_direction: bool = True
+        reverse_reaction_direction: bool = True,
     ):
         w0 = magnitude_start_key
         w1 = magnitude_end_key
@@ -96,7 +96,9 @@ class LinearReactionString:
                     linear_reaction_components[load_dir][load_case].append(
                         linear_reaction
                     )
-        return cls(linear_reaction_components, w0, w1, x0, x1, reverse_reaction_direction)
+        return cls(
+            linear_reaction_components, w0, w1, x0, x1, reverse_reaction_direction
+        )
 
     def extract_reaction_string(self, xa: float, xb: float, case: str, dir: str):
         """
