@@ -24,7 +24,6 @@ def apply_spread_angle(
     """
     angle_rads = math.radians(spread_angle)
     spread_amount = wall_height * math.tan(angle_rads)
-    print(f"{spread_amount=} | {wall_height=}")
     if None not in [w0, w1, x0, x1]:
         projected_x0 = max(0.0, x0 - spread_amount)
         projected_x1 = min(wall_length, x1 + spread_amount)
