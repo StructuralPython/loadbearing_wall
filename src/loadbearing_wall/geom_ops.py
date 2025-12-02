@@ -36,8 +36,6 @@ def apply_spread_angle(
         print(f"Weird condition: {locals()=}")
 
     projected_length = projected_x1 - projected_x0
-
-    print(f"{projected_length=}")
     ratio = original_length / projected_length
 
     if None not in [w0, w1, x0, x1]:
@@ -46,7 +44,6 @@ def apply_spread_angle(
     elif None not in [x, p]:
         projected_w0 = p / projected_length
         projected_w1 = p / projected_length
-    print(f"{projected_w1=}")
     return (
         round_to_close_integer(projected_w0),
         round_to_close_integer(projected_w1),
@@ -89,7 +86,6 @@ def apply_minimum_width(
 
     projected_x1 = location + spread_width / 2
     projected_w0 = projected_w1 = magnitude / (projected_x1 - projected_x0)
-    print(f"{projected_w0=}")
     return (
         round_to_close_integer(projected_w0),
         round_to_close_integer(projected_w1),
