@@ -190,7 +190,6 @@ class LinearWallModel(BaseModel):
                             }
                         )
                     else:
-                        print(f"{dist_load=}")
                         proj[load_dir][load_case].append(dist_load)
 
         for load_dir, load_cases in self.point_loads.items():
@@ -224,7 +223,6 @@ class LinearWallModel(BaseModel):
                             }
                         )
                     else:
-                        print(f"Min spread: {point_load=}")
                         projected_load = geom.apply_minimum_width(
                             point_load[p],
                             point_load[x],

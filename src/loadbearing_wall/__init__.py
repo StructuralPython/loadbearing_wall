@@ -5,7 +5,7 @@ reactions and load-transfer.
 The wall model is parameterizable and can represent any material
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 from loadbearing_wall.wall_model import LinearWallModel
 from loadbearing_wall import *
