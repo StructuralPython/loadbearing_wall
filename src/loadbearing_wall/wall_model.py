@@ -253,6 +253,7 @@ class LinearWallModel(BaseModel):
             self.magnitude_end_key,
             self.location_start_key,
             self.location_end_key,
+            self.reverse_reaction_force_direction,
         )
         return lrs.consolidate_reactions(
             flatten=flattened, dir_key=direction_key, case_key=case_key
