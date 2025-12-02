@@ -20,10 +20,10 @@ class LinearWallModel(BaseModel):
     out_of_plane_dir: str = "y"
     apply_spread_angle_gravity: bool = True
     apply_spread_angle_inplane: bool = True
-    magnitude_point_key: str = 'p'
+    magnitude_point_key: str = "p"
     magnitude_start_key: str = "w0"
     magnitude_end_key: str = "w1"
-    location_point_key: str = 'x'
+    location_point_key: str = "x"
     location_start_key: str = "x0"
     location_end_key: str = "x1"
     reverse_reaction_force_direction: bool = True
@@ -229,7 +229,7 @@ class LinearWallModel(BaseModel):
                             point_load[p],
                             point_load[x],
                             self.minimum_point_spread,
-                            self.length
+                            self.length,
                         )
                         proj[load_dir][load_case].append(
                             {
