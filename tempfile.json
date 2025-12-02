@@ -2,6 +2,7 @@
   "height": 2.0,
   "length": 4.0,
   "vertical_spread_angle": 0.0,
+  "minimum_point_spread": 0.5,
   "distributed_loads": {
     "Fz": {
       "D": [
@@ -26,22 +27,22 @@
     "Fz": {
       "D": [
         {
-          "w1": 100.0,
-          "x1": 0.5
+          "p": 100.0,
+          "x": 2.0
         }
       ],
       "L": [
         {
-          "w1": 100.0,
-          "x1": 0.5
+          "p": 100.0,
+          "x": 2.0
         }
       ]
     },
     "Fx": {
       "W": [
         {
-          "w1": 2000,
-          "x1": 0.0
+          "p": 2000,
+          "x": 0.0
         }
       ]
     }
@@ -51,8 +52,11 @@
   "out_of_plane_dir": "y",
   "apply_spread_angle_gravity": true,
   "apply_spread_angle_inplane": true,
+  "magnitude_point_key": "p",
   "magnitude_start_key": "w1",
   "magnitude_end_key": "w2",
+  "location_point_key": "x",
   "location_start_key": "x1",
-  "location_end_key": "x2"
+  "location_end_key": "x2",
+  "reverse_reaction_force_direction": true
 }
