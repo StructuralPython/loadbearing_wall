@@ -97,7 +97,7 @@ class LinearReactionString:
 
     def extract_reaction_string(
         self, xa: float, xb: float, case: str, dir: str
-    ) -> Optional[list[LinearReaction]]:
+    ):
         """
         Returns a LinearReactionString representing the linear reactions that
         exist between 'xa' and 'xb' extracted from self.
