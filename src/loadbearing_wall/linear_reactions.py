@@ -63,6 +63,7 @@ class LinearReactionString:
     magnitude_end_key: str
     location_start_key: str
     location_end_key: str
+    reverse_reaction_direction: bool = True
 
     @classmethod
     def from_projected_loads(
@@ -72,11 +73,13 @@ class LinearReactionString:
         magnitude_end_key: str,
         location_start_key: str,
         location_end_key: str,
+        reverse_reaction_direction: bool = True
     ):
         w0 = magnitude_start_key
         w1 = magnitude_end_key
         x0 = location_start_key
         x1 = location_end_key
+        reverse_direction = -1 if reverse_reaction_direction else 1
         linear_reaction_components = {}
         for load_dir, load_cases in projected_loads.items():
             linear_reaction_components.setdefault(load_dir, {})
@@ -84,8 +87,8 @@ class LinearReactionString:
                 linear_reaction_components[load_dir].setdefault(load_case, [])
                 for applied_load in applied_loads:
                     linear_reaction = LinearReaction(
-                        applied_load[w0],
-                        applied_load.get(w1),
+                        applied_load[w0] * reverse_direction,
+                        applied_load.get(w1) * reverse_direction,
                         applied_load[x0],
                         applied_load.get(x1),
                     )
@@ -93,7 +96,7 @@ class LinearReactionString:
                     linear_reaction_components[load_dir][load_case].append(
                         linear_reaction
                     )
-        return cls(linear_reaction_components, w0, w1, x0, x1)
+        return cls(linear_reaction_components, w0, w1, x0, x1, reverse_reaction_direction)
 
     def extract_reaction_string(self, xa: float, xb: float, case: str, dir: str):
         """
