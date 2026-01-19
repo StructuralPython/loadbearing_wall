@@ -97,8 +97,30 @@ def test_full_load_dist(WM0):
         {
             'dir': 'Fz',
             'case': 'D',
-            'w1': -40,
-            'w2': -40,
+            'w1': -30,
+            'w2': -30,
+            'x1': 0.0,
+            'x2': 4.0
+        }
+    ]
+    WM0.distribute_loads_full_length = True
+    rxn = WM0.get_reactions(flattened=False)
+    assert rxn['Fz']['L'] == [
+        {
+            'dir': 'Fz',
+            'case': 'L',
+            'w1': -32.5,
+            'w2': -32.5,
+            'x1': 0.0,
+            'x2': 4.0
+        }
+    ]
+    assert rxn['Fx']['W'] == [
+        {
+            'dir': 'Fx',
+            'case': 'W',
+            'w1': -500.0,
+            'w2': -500.0,
             'x1': 0.0,
             'x2': 4.0
         }

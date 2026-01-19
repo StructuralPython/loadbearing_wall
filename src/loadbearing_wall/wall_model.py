@@ -193,11 +193,11 @@ class LinearWallModel(BaseModel):
                             }
                         )
                     elif self.distribute_loads_full_length:
-                        w0 = dist_load[w0]
-                        w1 = dist_load[w1]
-                        x0 = dist_load[x0]
-                        x1 = dist_load[x1]
-                        total_load = (w0 + w1) / 2 * (x1 - x0)
+                        w0_value = dist_load[w0]
+                        w1_value = dist_load[w1]
+                        x0_value = dist_load[x0]
+                        x1_value = dist_load[x1]
+                        total_load = (w0_value + w1_value) / 2 * (x1_value - x0_value)
                         w_full = total_load / self.length
                         proj[load_dir][load_case].append(
                             {w0: w_full, w1: w_full, x0: 0.0, x1: self.length}
