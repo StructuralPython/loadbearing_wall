@@ -174,7 +174,17 @@ class LinearWallModel(BaseModel):
             for load_case, dist_loads in load_cases.items():
                 proj[load_dir].setdefault(load_case, [])
                 for dist_load in dist_loads:
-                    if should_apply_spread_angle:
+                    if self.distribute_loads_full_length:
+                        w0_value = dist_load[w0]
+                        w1_value = dist_load[w1]
+                        x0_value = dist_load[x0]
+                        x1_value = dist_load[x1]
+                        total_load = (w0_value + w1_value) / 2 * (x1_value - x0_value)
+                        w_full = total_load / self.length
+                        proj[load_dir][load_case].append(
+                            {w0: w_full, w1: w_full, x0: 0.0, x1: self.length}
+                        )
+                    elif should_apply_spread_angle:
                         projected_load = geom.apply_spread_angle(
                             self.height,
                             self.length,
@@ -191,16 +201,6 @@ class LinearWallModel(BaseModel):
                                 x0: projected_load[2],
                                 x1: projected_load[3],
                             }
-                        )
-                    elif self.distribute_loads_full_length:
-                        w0_value = dist_load[w0]
-                        w1_value = dist_load[w1]
-                        x0_value = dist_load[x0]
-                        x1_value = dist_load[x1]
-                        total_load = (w0_value + w1_value) / 2 * (x1_value - x0_value)
-                        w_full = total_load / self.length
-                        proj[load_dir][load_case].append(
-                            {w0: w_full, w1: w_full, x0: 0.0, x1: self.length}
                         )
                     else:
                         proj[load_dir][load_case].append(dist_load)
@@ -219,7 +219,14 @@ class LinearWallModel(BaseModel):
             for load_case, point_loads in load_cases.items():
                 proj[load_dir].setdefault(load_case, [])
                 for point_load in point_loads:
-                    if should_apply_spread_angle:
+                    if self.distribute_loads_full_length:
+                        total_load = point_load[p]
+                        w_full = total_load / self.length
+                        proj[load_dir][load_case].append(
+                            {w0: w_full, w1: w_full, x0: 0.0, x1: self.length}
+                        )
+
+                    elif should_apply_spread_angle:
                         projected_load = geom.apply_spread_angle(
                             self.height,
                             self.length,
@@ -235,12 +242,7 @@ class LinearWallModel(BaseModel):
                                 x1: projected_load[3],
                             }
                         )
-                    elif self.distribute_loads_full_length:
-                        total_load = point_load[p]
-                        w_full = total_load / self.length
-                        proj[load_dir][load_case].append(
-                            {w0: w_full, w1: w_full, x0: 0.0, x1: self.length}
-                        )
+
                     else:
                         projected_load = geom.apply_minimum_width(
                             point_load[p],
