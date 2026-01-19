@@ -200,12 +200,7 @@ class LinearWallModel(BaseModel):
                         total_load = (w0 + w1) / 2 * (x1 - x0)
                         w_full = total_load / self.length
                         proj[load_dir][load_case].append(
-                            {
-                                w0: w_full,
-                                w1: w_full,
-                                x0: 0.0,
-                                x1: self.length
-                            }
+                            {w0: w_full, w1: w_full, x0: 0.0, x1: self.length}
                         )
                     else:
                         proj[load_dir][load_case].append(dist_load)
@@ -244,12 +239,7 @@ class LinearWallModel(BaseModel):
                         total_load = point_load[p]
                         w_full = total_load / self.length
                         proj[load_dir][load_case].append(
-                            {
-                                w0: w_full,
-                                w1: w_full,
-                                x0: 0.0,
-                                x1: self.length
-                            }
+                            {w0: w_full, w1: w_full, x0: 0.0, x1: self.length}
                         )
                     else:
                         projected_load = geom.apply_minimum_width(
