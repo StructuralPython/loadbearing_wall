@@ -13,6 +13,7 @@ class LinearWallModel(BaseModel):
     length: float
     vertical_spread_angle: float = 0.0
     minimum_point_spread: float = 0.5
+    distribute_loads_full_length: bool = False
     distributed_loads: dict = Field(default={})
     point_loads: dict = Field(default={})
     gravity_dir: str = "z"
@@ -43,6 +44,8 @@ class LinearWallModel(BaseModel):
         your context and the length unit system you are using. In other words, all applied point loads
         will be converted to distributed loads spread over this distance unless a vertical spread
         angle is applied.
+    'distribute_loads_full_length': If True, will override both 'vertical_spread_angle' and
+        'minimum_point_spread' and will distribute all loads evenly across the whole wall panel.
     'distributed_loads': A dictionary of loads. Can be set directly or using the .add_dist_load()
         methods
     'point_loads': A dictionary of loads. Can be set directly or using the .add_point_load()
@@ -189,6 +192,21 @@ class LinearWallModel(BaseModel):
                                 x1: projected_load[3],
                             }
                         )
+                    elif self.distribute_loads_full_length:
+                        w0 = dist_load[w0]
+                        w1 = dist_load[w1]
+                        x0 = dist_load[x0]
+                        x1 = dist_load[x1]
+                        total_load = (w0 + w1) / 2 * (x1 - x0)
+                        w_full = total_load / self.length
+                        proj[load_dir][load_case].append(
+                            {
+                                w0: w_full,
+                                w1: w_full,
+                                x0: 0.0,
+                                x1: self.length
+                            }
+                        )
                     else:
                         proj[load_dir][load_case].append(dist_load)
 
@@ -220,6 +238,17 @@ class LinearWallModel(BaseModel):
                                 w1: projected_load[1],
                                 x0: projected_load[2],
                                 x1: projected_load[3],
+                            }
+                        )
+                    elif self.distribute_loads_full_length:
+                        total_load = point_load[p]
+                        w_full = total_load / self.length
+                        proj[load_dir][load_case].append(
+                            {
+                                w0: w_full,
+                                w1: w_full,
+                                x0: 0.0,
+                                x1: self.length
                             }
                         )
                     else:
