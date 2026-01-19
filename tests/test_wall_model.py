@@ -90,6 +90,20 @@ def test_45_spread(WM1):
         },
     ]
 
+def test_full_load_dist(WM0):
+    WM0.distribute_loads_full_length = True
+    rxn = WM0.get_reactions(flattened=False)
+    assert rxn['Fz']['D'] == [
+        {
+            'dir': 'Fz',
+            'case': 'D',
+            'w1': -40,
+            'w2': -40,
+            'x1': 0.0,
+            'x2': 4.0
+        }
+    ]
+
 
 def test_serialization(WM0):
     serialized_dict = WM0.dump_dict()
